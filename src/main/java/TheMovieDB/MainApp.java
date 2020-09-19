@@ -9,8 +9,10 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -34,27 +36,48 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage ir_primaryStage) throws Exception {
+
+        //Background Image
+        Image lr_bImage = new Image("file:BackgroundMain.jpg",400,300,false,true);
+        BackgroundImage lr_backgroundImage = new BackgroundImage(lr_bImage,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.DEFAULT,BackgroundSize.DEFAULT);
+        Background lr_backgroundMain = new Background(lr_backgroundImage);
+
         //Layout and Scene
         VBox lr_vBox = new VBox();
         lr_vBox.setPadding(new Insets(10,10,10,25));
-        VBox lr_vBoxTitle = new VBox();
-        lr_vBoxTitle.setPadding(new Insets(5,10,30,128));
-
+        lr_vBox.setBackground(lr_backgroundMain);
+        BorderPane lr_borderPaneTitle = new BorderPane();
+        BorderPane lr_borderPaneButton = new BorderPane();
+        lr_borderPaneButton.setPadding(new Insets(5,10,0,0));
         Scene lr_scene = new Scene(lr_vBox,400,300);
 
         //Labels for showing path
         Label lr_labelTitle = new Label ("Settings");
-        lr_labelTitle.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+        lr_labelTitle.setPadding(new Insets(3,10,30,0));
+        Label lr_labelCurrent = new Label ("Current path:");
+        Label lr_labelPath = new Label ("Actual path");
+
+        //Buttons
+        Button lr_buttonPath = new Button("Choose another Path");
+        lr_buttonPath.setMaxSize(110,10);
+        lr_buttonPath.setStyle("-fx-font-size:10");
+
+        //Effects for label
         DropShadow lr_dropShadow = new DropShadow();
         lr_dropShadow.setOffsetY(3.0f);
         lr_dropShadow.setColor(Color.color(0.4f, 0.4f, 0.4f));
-        lr_labelTitle.setEffect(lr_dropShadow);
 
-        Label lr_labelCurrent = new Label ("Current path:");
+        //Labels configuration
+        lr_labelTitle.setEffect(lr_dropShadow);
+        lr_labelTitle.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
         lr_labelCurrent.setBackground(new Background(new BackgroundFill(Color.GOLD,null,null)));
-        Label lr_labelPath = new Label ("Actual path");
-        lr_vBoxTitle.getChildren().add(lr_labelTitle);
-        lr_vBox.getChildren().addAll(lr_vBoxTitle,lr_labelCurrent,lr_labelPath);
+
+        //Add components
+        lr_borderPaneTitle.setCenter(lr_labelTitle);
+        lr_vBox.getChildren().addAll(lr_borderPaneTitle,lr_labelCurrent,lr_labelPath,lr_borderPaneButton);
+        lr_borderPaneButton.setCenter(lr_buttonPath);
+
+
 
 
 
