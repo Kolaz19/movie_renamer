@@ -48,7 +48,7 @@ public class MainApp extends Application {
         lr_vBox.setBackground(lr_backgroundMain);
         BorderPane lr_borderPaneTitle = new BorderPane();
         BorderPane lr_borderPaneButton = new BorderPane();
-        lr_borderPaneButton.setPadding(new Insets(5,10,0,0));
+        lr_borderPaneButton.setPadding(new Insets(50,10,0,0));
         Scene lr_scene = new Scene(lr_vBox,400,300);
 
         //Labels for showing path
@@ -61,6 +61,10 @@ public class MainApp extends Application {
         Button lr_buttonPath = new Button("Choose another Path");
         lr_buttonPath.setMaxSize(110,10);
         lr_buttonPath.setStyle("-fx-font-size:10");
+        Button lr_buttonScan = new Button ("Scan");
+        lr_buttonScan.setMaxSize(60,10);
+        lr_buttonScan.setStyle("-fx-font-size:10");
+
 
         //Effects for label
         DropShadow lr_dropShadow = new DropShadow();
@@ -75,10 +79,13 @@ public class MainApp extends Application {
         //Add components
         lr_borderPaneTitle.setCenter(lr_labelTitle);
         lr_vBox.getChildren().addAll(lr_borderPaneTitle,lr_labelCurrent,lr_labelPath,lr_borderPaneButton);
-        lr_borderPaneButton.setCenter(lr_buttonPath);
+        lr_borderPaneButton.setLeft(lr_buttonPath);
+        lr_borderPaneButton.setCenter(lr_buttonScan);
 
-
-
+        //Button Row Configuration
+        BorderPane.setAlignment(lr_buttonScan,Pos.CENTER_LEFT);
+        Insets lr_insetButton = new Insets(20);
+        BorderPane.setMargin(lr_buttonPath,lr_insetButton);
 
 
         TmdbMovies movies = new TmdbApi(readFromConfig("[API Key]")).getMovies();
