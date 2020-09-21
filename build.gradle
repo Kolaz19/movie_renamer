@@ -5,7 +5,7 @@ plugins {
 }
 
 //add
-mainClassName = 'TheMovieDB.MainApp'
+mainClassName = 'TheMovieDB.Main'
 
 group 'org.example'
 version '1.0-SNAPSHOT'

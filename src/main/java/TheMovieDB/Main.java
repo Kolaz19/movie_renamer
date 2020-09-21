@@ -3,6 +3,7 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.model.MovieDb;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,18 +14,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class MainApp extends Application {
+public class Main extends Application {
 
     private static File mr_configFile;
 
@@ -48,14 +52,15 @@ public class MainApp extends Application {
         lr_vBox.setBackground(lr_backgroundMain);
         BorderPane lr_borderPaneTitle = new BorderPane();
         BorderPane lr_borderPaneButton = new BorderPane();
-        lr_borderPaneButton.setPadding(new Insets(50,10,0,0));
-        Scene lr_scene = new Scene(lr_vBox,400,300);
+        lr_borderPaneButton.setPadding(new Insets(20,10,0,0));
+        Scene lr_scene = new Scene(lr_vBox,300,200);
 
         //Labels for showing path
         Label lr_labelTitle = new Label ("Settings");
         lr_labelTitle.setPadding(new Insets(3,10,30,0));
         Label lr_labelCurrent = new Label ("Current path:");
-        Label lr_labelPath = new Label ("Actual path");
+        Label lr_labelPath = new Label (readFromConfig("[Path]"));
+        //TODO Path to long
 
         //Buttons
         Button lr_buttonPath = new Button("Choose another Path");
@@ -64,6 +69,18 @@ public class MainApp extends Application {
         Button lr_buttonScan = new Button ("Scan");
         lr_buttonScan.setMaxSize(60,10);
         lr_buttonScan.setStyle("-fx-font-size:10");
+
+        //Buttons Listener
+        lr_buttonPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    saveToConfig("[Path]",chooseFolder());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
         //Effects for label
@@ -107,8 +124,56 @@ public class MainApp extends Application {
                 break;
             }
         }
+        lr_scanner.close();
         return lv_result[1];
+
     }
+
+    public void saveToConfig (String iv_keyWord,String iv_parameter) throws FileNotFoundException {
+        //Read content of config.txt
+        List<String> la_configContent = new ArrayList<String>();
+        Scanner lr_scanner = new Scanner(mr_configFile);
+        while(lr_scanner.hasNextLine()) {
+            String lv_singleLine = lr_scanner.nextLine();
+            la_configContent.add(lv_singleLine);
+        }
+        //Clear config.txt
+        try {
+            BufferedWriter lr_writer = new BufferedWriter(new FileWriter(mr_configFile));
+            lr_writer.write("");
+
+            //Replace content and fill file
+            String[] la_contentSplit = {""};
+            for (String lv_line : la_configContent) {
+                la_contentSplit = lv_line.split("=");
+                if (la_contentSplit[0].equals(iv_keyWord)) {
+                    lr_writer.append(la_contentSplit[0])
+                             .append("=")
+                             .append(iv_parameter)
+                             .append("\n");
+                } else {
+                    lr_writer.append(lv_line)
+                            .append("\n");
+                }
+            }
+            lr_writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public String chooseFolder () {
+        Stage lr_temporaryStage = new Stage();
+        DirectoryChooser lr_directoryChooser = new DirectoryChooser();
+        File lr_choosenDirectory = lr_directoryChooser.showDialog(lr_temporaryStage);
+        return lr_choosenDirectory.getAbsolutePath();
+    }
+
+
+
 
     }
 
