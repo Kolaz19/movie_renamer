@@ -4,11 +4,8 @@ import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.model.MovieDb;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,11 +27,22 @@ import java.util.Scanner;
 
 public class Main extends Application {
 
-    private static File mr_configFile;
+    private static final File gr_configFile = new File ("config.txt");
+    Image mr_bImage;
+    BackgroundImage mr_backgroundImage;
+    Background mr_backgroundMain;
+    VBox mr_vBox;
+    BorderPane mr_borderPaneTitle, mr_borderPaneButton;
+    Scene mr_scene;
+    Label mr_labelTitle, mr_labelCurrent, mr_labelPath;
+    Button mr_buttonPath, mr_buttonScan;
+    DropShadow mr_dropShadow;
+    Insets mr_insetButton;
+    ScanStage mr_scanStage;
+
 
     public static void main(String[] args) {
         BasicConfigurator.configure();
-        mr_configFile = new File ("config.txt");
         launch(args);
     }
 
@@ -42,40 +50,44 @@ public class Main extends Application {
     public void start(Stage ir_primaryStage) throws Exception {
 
         //Background Image
-        Image lr_bImage = new Image("file:BackgroundMain.jpg",400,300,false,true);
-        BackgroundImage lr_backgroundImage = new BackgroundImage(lr_bImage,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.DEFAULT,BackgroundSize.DEFAULT);
-        Background lr_backgroundMain = new Background(lr_backgroundImage);
+        mr_bImage = new Image("file:BackgroundMain.jpg",400,300,false,true);
+        mr_backgroundImage = new BackgroundImage(mr_bImage,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.DEFAULT,BackgroundSize.DEFAULT);
+        mr_backgroundMain = new Background(mr_backgroundImage);
 
         //Layout and Scene
-        VBox lr_vBox = new VBox();
-        lr_vBox.setPadding(new Insets(10,10,10,25));
-        lr_vBox.setBackground(lr_backgroundMain);
-        BorderPane lr_borderPaneTitle = new BorderPane();
-        BorderPane lr_borderPaneButton = new BorderPane();
-        lr_borderPaneButton.setPadding(new Insets(20,10,0,0));
-        Scene lr_scene = new Scene(lr_vBox,300,200);
+        mr_vBox = new VBox();
+        mr_vBox.setPadding(new Insets(10,10,10,25));
+        mr_vBox.setBackground(mr_backgroundMain);
+        mr_borderPaneTitle = new BorderPane();
+        mr_borderPaneButton = new BorderPane();
+        mr_borderPaneButton.setPadding(new Insets(0,10,0,0));
+        mr_scene = new Scene(mr_vBox,300,200);
 
         //Labels for showing path
-        Label lr_labelTitle = new Label ("Settings");
-        lr_labelTitle.setPadding(new Insets(3,10,30,0));
-        Label lr_labelCurrent = new Label ("Current path:");
-        Label lr_labelPath = new Label (readFromConfig("[Path]"));
-        //TODO Path to long
+        mr_labelTitle = new Label ("Settings");
+        mr_labelTitle.setPadding(new Insets(3,10,30,0));
+        mr_labelCurrent = new Label ("Current path:");
+        mr_labelPath = new Label (readFromConfig("[Path]"));
+        mr_labelPath.setMinHeight(60);
+        mr_labelPath.setWrapText(true);
+        mr_labelPath.setMaxWidth(245);
+        mr_labelPath.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
         //Buttons
-        Button lr_buttonPath = new Button("Choose another Path");
-        lr_buttonPath.setMaxSize(110,10);
-        lr_buttonPath.setStyle("-fx-font-size:10");
-        Button lr_buttonScan = new Button ("Scan");
-        lr_buttonScan.setMaxSize(60,10);
-        lr_buttonScan.setStyle("-fx-font-size:10");
+        mr_buttonPath = new Button("Choose another Path");
+        mr_buttonPath.setMaxSize(110,10);
+        mr_buttonPath.setStyle("-fx-font-size:10");
+        mr_buttonScan = new Button ("Scan");
+        mr_buttonScan.setMaxSize(60,10);
+        mr_buttonScan.setStyle("-fx-font-size:10");
 
         //Buttons Listener
-        lr_buttonPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        mr_buttonPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 try {
                     saveToConfig("[Path]",chooseFolder());
+                    mr_labelPath.setText(readFromConfig("[Path]"));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -84,39 +96,43 @@ public class Main extends Application {
 
 
         //Effects for label
-        DropShadow lr_dropShadow = new DropShadow();
-        lr_dropShadow.setOffsetY(3.0f);
-        lr_dropShadow.setColor(Color.color(0.4f, 0.4f, 0.4f));
+        mr_dropShadow = new DropShadow();
+        mr_dropShadow.setOffsetY(3.0f);
+        mr_dropShadow.setColor(Color.color(0.4f, 0.4f, 0.4f));
 
         //Labels configuration
-        lr_labelTitle.setEffect(lr_dropShadow);
-        lr_labelTitle.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        lr_labelCurrent.setBackground(new Background(new BackgroundFill(Color.GOLD,null,null)));
+        mr_labelTitle.setEffect(mr_dropShadow);
+        mr_labelTitle.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+        mr_labelCurrent.setBackground(new Background(new BackgroundFill(Color.GOLD,null,null)));
 
         //Add components
-        lr_borderPaneTitle.setCenter(lr_labelTitle);
-        lr_vBox.getChildren().addAll(lr_borderPaneTitle,lr_labelCurrent,lr_labelPath,lr_borderPaneButton);
-        lr_borderPaneButton.setLeft(lr_buttonPath);
-        lr_borderPaneButton.setCenter(lr_buttonScan);
+        mr_borderPaneTitle.setCenter(mr_labelTitle);
+        mr_vBox.getChildren().addAll(mr_borderPaneTitle, mr_labelCurrent, mr_labelPath, mr_borderPaneButton);
+        mr_borderPaneButton.setLeft(mr_buttonPath);
+        mr_borderPaneButton.setCenter(mr_buttonScan);
 
         //Button Row Configuration
-        BorderPane.setAlignment(lr_buttonScan,Pos.CENTER_LEFT);
-        Insets lr_insetButton = new Insets(20);
-        BorderPane.setMargin(lr_buttonPath,lr_insetButton);
+        BorderPane.setAlignment(mr_buttonScan,Pos.CENTER_LEFT);
+        mr_insetButton = new Insets(20);
+        BorderPane.setMargin(mr_buttonPath, mr_insetButton);
 
-
+        //Example
         TmdbMovies movies = new TmdbApi(readFromConfig("[API Key]")).getMovies();
         MovieDb movie = movies.getMovie(5353,"en");
 
         //Set up and start
+        mr_scanStage = new ScanStage(ir_primaryStage, mr_buttonScan);
+        mr_scanStage.setRootHandler();
+        ir_primaryStage.setWidth(300);
+        ir_primaryStage.setHeight(245);
         ir_primaryStage.setTitle("Main Menu");
-        ir_primaryStage.setScene(lr_scene);
+        ir_primaryStage.setScene(mr_scene);
         ir_primaryStage.setResizable(false);
         ir_primaryStage.show();
     }
 
     public String readFromConfig (String iv_keyWord) throws FileNotFoundException {
-        Scanner lr_scanner = new Scanner(mr_configFile);
+        Scanner lr_scanner = new Scanner(gr_configFile);
         String[] lv_result = {""};
         while(lr_scanner.hasNextLine()) {
             lv_result = lr_scanner.nextLine().split("=");
@@ -129,17 +145,17 @@ public class Main extends Application {
 
     }
 
-    public void saveToConfig (String iv_keyWord,String iv_parameter) throws FileNotFoundException {
+    public static void saveToConfig (String iv_keyWord,String iv_parameter) throws FileNotFoundException {
         //Read content of config.txt
         List<String> la_configContent = new ArrayList<String>();
-        Scanner lr_scanner = new Scanner(mr_configFile);
+        Scanner lr_scanner = new Scanner(gr_configFile);
         while(lr_scanner.hasNextLine()) {
             String lv_singleLine = lr_scanner.nextLine();
             la_configContent.add(lv_singleLine);
         }
         //Clear config.txt
         try {
-            BufferedWriter lr_writer = new BufferedWriter(new FileWriter(mr_configFile));
+            BufferedWriter lr_writer = new BufferedWriter(new FileWriter(gr_configFile));
             lr_writer.write("");
 
             //Replace content and fill file
