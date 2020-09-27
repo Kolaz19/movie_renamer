@@ -116,10 +116,6 @@ public class Main extends Application {
         mr_insetButton = new Insets(20);
         BorderPane.setMargin(mr_buttonPath, mr_insetButton);
 
-        //Example
-        TmdbMovies movies = new TmdbApi(readFromConfig("[API Key]")).getMovies();
-        MovieDb movie = movies.getMovie(5353,"en");
-
         //Set up and start
         mr_scanStage = new ScanStage(ir_primaryStage, mr_buttonScan);
         mr_scanStage.setRootHandler();
@@ -131,7 +127,7 @@ public class Main extends Application {
         ir_primaryStage.show();
     }
 
-    public String readFromConfig (String iv_keyWord) throws FileNotFoundException {
+    public static String readFromConfig(String iv_keyWord) throws FileNotFoundException {
         Scanner lr_scanner = new Scanner(gr_configFile);
         String[] lv_result = {""};
         while(lr_scanner.hasNextLine()) {
