@@ -2,6 +2,7 @@ package TheMovieDB;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,7 +22,7 @@ public class ScanStage {
     Stage mr_stageScan;
     Scene mr_sceneScan;
     BorderPane mr_borderPaneMain, mr_borderPaneRight, mr_borderPaneLeft;
-    Label mr_labelFolder, mr_labelFile, mr_labelSpacing, mr_labelMovieTitle,mr_labelSuggestion, mr_labelFolderName, mr_labelContentName, mr_labelMoviePoster;
+    Label mr_labelFolder, mr_labelFile, mr_labelSpacing, mr_labelMovieTitle,mr_labelSuggestion, mr_labelFolderName, mr_labelContentName, mr_labelMoviePoster, mr_labelArrow;
     VBox mr_vBoxRightMid, mr_vBoxLeftMid;
     HBox mr_hBoxRightBottom, mr_hBoxLeftBottom, mr_hBoxLeftTop;
     Button mr_buttonManSearch, mr_buttonBack, mr_buttonForward, mr_buttonConfirm;
@@ -39,13 +40,13 @@ public class ScanStage {
 
         mr_hBoxLeftBottom = new HBox();
         mr_hBoxLeftBottom.setSpacing(10);
-        mr_hBoxLeftBottom.setPadding(new Insets(5,10,50,40));
+        mr_hBoxLeftBottom.setPadding(new Insets(5,10,55,40));
 
         mr_vBoxRightMid = new VBox();
         mr_vBoxRightMid.setPadding(new Insets(64,10,0,10));
 
         mr_vBoxLeftMid = new VBox();
-        mr_vBoxLeftMid.setPadding(new Insets(10,0,10,5));
+        mr_vBoxLeftMid.setPadding(new Insets(10,0,5,5));
         mr_vBoxLeftMid.setSpacing(1);
 
         mr_hBoxLeftTop = new HBox();
@@ -60,7 +61,7 @@ public class ScanStage {
         mr_borderPaneRight = new BorderPane();
         mr_borderPaneRight.setBottom(mr_hBoxRightBottom);
         mr_borderPaneRight.setCenter(mr_vBoxRightMid);
-        mr_borderPaneRight.setPrefWidth(240);
+        mr_borderPaneRight.setPrefWidth(200);
 
         mr_borderPaneMain = new BorderPane();
         mr_borderPaneMain.setLeft(mr_borderPaneLeft);
@@ -77,8 +78,16 @@ public class ScanStage {
         mr_buttonConfirm = new Button("",new ImageView(lr_imageCheckmarkIcon));
 
         //Configuration Labels
-        mr_labelFolderName = new Label("Test");
-        mr_labelContentName = new Label("Test");
+        mr_labelFolderName = new Label("Space");
+        mr_labelFolderName.setAlignment(Pos.TOP_LEFT);
+        mr_labelFolderName.setWrapText(true);
+        mr_labelFolderName.setMaxWidth(170);
+        mr_labelFolderName.setMinHeight(34);
+        mr_labelContentName = new Label("Space");
+        mr_labelContentName.setAlignment(Pos.TOP_LEFT);
+        mr_labelContentName.setWrapText(true);
+        mr_labelContentName.setMaxWidth(170);
+        mr_labelContentName.setMinHeight(34);
         mr_labelSuggestion = new Label("Suggestion:");
         mr_labelSuggestion.setFont(new Font("Arial",15));
         mr_labelSuggestion.setStyle("-fx-font-weight: bold;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
@@ -94,10 +103,13 @@ public class ScanStage {
         mr_labelSpacing = new Label (" \n ");
         mr_imageMovie = new Image("file:te.jpg",180,250,false,true);
         mr_labelMoviePoster = new Label("",new ImageView(mr_imageMovie));
+        Image lr_imageArrow = new Image ("file:BlackArrowDownward.png",25,125,false,true);
+        mr_labelArrow = new Label("",new ImageView(lr_imageArrow));
+        mr_labelArrow.setPadding(new Insets(0,0,0,42));
 
         //Add elements
         mr_hBoxRightBottom.getChildren().addAll(mr_buttonManSearch);
-        mr_vBoxRightMid.getChildren().addAll(mr_labelFolder,mr_labelFolderName,mr_labelSpacing, mr_labelFile,mr_labelContentName);
+        mr_vBoxRightMid.getChildren().addAll(mr_labelFolder,mr_labelFolderName,mr_labelSpacing, mr_labelFile,mr_labelContentName,mr_labelArrow);
         mr_hBoxLeftBottom.getChildren().addAll(mr_buttonBack,mr_buttonForward,mr_buttonConfirm);
         mr_vBoxLeftMid.getChildren().addAll(mr_labelMovieTitle,mr_labelMoviePoster);
         mr_hBoxLeftTop.getChildren().addAll(mr_labelSuggestion);
