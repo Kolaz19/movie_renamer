@@ -125,6 +125,7 @@ public class Main extends Application {
         ir_primaryStage.setScene(mr_scene);
         ir_primaryStage.setResizable(false);
         ir_primaryStage.show();
+
     }
 
     public static String readFromConfig(String iv_keyWord) throws FileNotFoundException {
