@@ -55,6 +55,7 @@ public class ScanStage {
         //For HEADLINE
         mr_hBoxLeftTop = new HBox();
         mr_hBoxLeftTop.setPadding(new Insets(10,5,5,55));
+        
         //LEFT BorderPane
         mr_borderPaneLeft = new BorderPane();
         mr_borderPaneLeft.setBottom(mr_hBoxLeftBottom);
