@@ -117,7 +117,7 @@ public class Main extends Application {
         BorderPane.setMargin(mr_buttonPath, mr_insetButton);
 
         //Set up and start
-        mr_scanStage = new ScanStage(ir_primaryStage, mr_buttonScan);
+        mr_scanStage = new ScanStage(ir_primaryStage, mr_buttonScan, mr_labelPath);
         mr_scanStage.setRootHandler();
         ir_primaryStage.setWidth(300);
         ir_primaryStage.setHeight(245);
