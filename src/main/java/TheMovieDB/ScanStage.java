@@ -54,7 +54,7 @@ public class ScanStage {
         //For RIGHT LEFT and CONFIRM
         mr_hBoxLeftBottom = new HBox();
         mr_hBoxLeftBottom.setSpacing(10);
-        mr_hBoxLeftBottom.setPadding(new Insets(5, 10, 55, 40));
+        mr_hBoxLeftBottom.setPadding(new Insets(5, 10, 55, 50));
         //For FOLDER and FILE name
         mr_vBoxRightMid = new VBox();
         mr_vBoxRightMid.setPadding(new Insets(64, 10, 0, 10));
@@ -71,7 +71,7 @@ public class ScanStage {
         mr_borderPaneLeft.setBottom(mr_hBoxLeftBottom);
         mr_borderPaneLeft.setCenter(mr_vBoxLeftMid);
         mr_borderPaneLeft.setTop(mr_hBoxLeftTop);
-        mr_borderPaneLeft.setPrefWidth(200);
+        mr_borderPaneLeft.setPrefWidth(220);
         //RIGHT BorderPane
         mr_borderPaneRight = new BorderPane();
         mr_borderPaneRight.setBottom(mr_hBoxRightBottom);
@@ -82,7 +82,7 @@ public class ScanStage {
         mr_borderPaneMain.setLeft(mr_borderPaneLeft);
         mr_borderPaneMain.setRight(mr_borderPaneRight);
         mr_stageScan = new Stage();
-        mr_sceneScan = new Scene(mr_borderPaneMain, 400, 400);
+        mr_sceneScan = new Scene(mr_borderPaneMain, 430, 430);
 
         //Configuration Buttons
         mr_buttonManSearch = new Button("Manual Search");
@@ -110,18 +110,20 @@ public class ScanStage {
         mr_labelMovieTitle = new Label("Movie Title");
         mr_labelMovieTitle.setStyle("-fx-font-weight: bold;-fx-background-color: #cd5c5c");
         mr_labelMovieTitle.setFont(new Font("Arial", 15));
+        mr_labelMovieTitle.setMaxWidth(200);
         Image lr_imageFolderIcon = new Image("file:FolderIcon.png", 20, 20, false, true);
         mr_labelFolder = new Label("Current Folder ", new ImageView(lr_imageFolderIcon));
         mr_labelFolder.setStyle("-fx-font-weight: bold;-fx-background-color: abc;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
         Image lr_imageFileIcon = new Image("file:FileIcon.png", 20, 20, false, true);
         mr_labelFile = new Label("File in Folder ", new ImageView(lr_imageFileIcon));
         mr_labelFile.setStyle("-fx-font-weight: bold;-fx-background-color: abc;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
-        mr_imageMovie = new Image("file:te.jpg", 180, 250, false, true);
+        mr_imageMovie = new Image("file:te.jpg", 210, 280, false, true);
         mr_labelMoviePoster = new Label("", new ImageView(mr_imageMovie));
         Image lr_imageArrow = new Image("file:BlackArrowDownward.png", 25, 125, false, true);
         mr_labelArrow = new Label("", new ImageView(lr_imageArrow));
         mr_labelArrow.setPadding(new Insets(0, 0, 0, 42));
         mr_labelSpacing = new Label(" \n ");
+
 
         //Add elements
         mr_hBoxRightMidSmall.getChildren().addAll(mr_labelFolder, mr_buttonSkip);
@@ -131,8 +133,8 @@ public class ScanStage {
         mr_vBoxLeftMid.getChildren().addAll(mr_labelMovieTitle, mr_labelMoviePoster);
         mr_hBoxLeftTop.getChildren().addAll(mr_labelSuggestion);
 
-        mr_stageScan.setWidth(400);
-        mr_stageScan.setHeight(400);
+        mr_stageScan.setWidth(420);
+        mr_stageScan.setHeight(430);
         mr_stageScan.setTitle("Scanner");
         mr_stageScan.setScene(mr_sceneScan);
         mr_stageScan.setResizable(false);
@@ -159,20 +161,30 @@ public class ScanStage {
         File lr_filesList[] = lr_directoryPath.listFiles();
         ma_directoryList.clear();
 
-        //TODO directory empty
+        //TODO directory empty or non existent
         for (File lr_file : lr_filesList) {
             if (lr_file.isDirectory()) {
                 ma_directoryList.add(lr_file);
             }
         }
-        mv_currentFolderCount = 0;
+        mv_currentFolderCount = -1; //because nextFolder is called imidiately, so we need -1 for first call
         nextFolder();
+
     }
 
     //does set label for folder and file name and image
     public void nextFolder() throws FileNotFoundException {
-        mr_movieHandler = new MovieHandler(ma_directoryList.get(mv_currentFolderCount).getName());
-        //TODO moviehandler is set once. initialize picture and image
+        //TODO Check FolderCount
+        if (mv_currentFolderCount+1 < ma_directoryList.size()) {
+            mv_currentFolderCount++;
+        } else {
+            //TODO send message - Every folder was scanned!
+        }
+
+        String lv_movieName = ma_directoryList.get(mv_currentFolderCount).getName();
+        //Initialize MovieHandler with ALL movies for every new folder
+        mr_movieHandler = new MovieHandler(lv_movieName);
+        mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
 
 
 

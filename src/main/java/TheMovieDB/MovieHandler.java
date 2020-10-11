@@ -41,8 +41,10 @@ public class MovieHandler {
 
     public String getMovieName() {
         MovieDb lr_movie =  ma_movieList.get(mv_currentMovieCounter);
-        String lv_fullNameYear = lr_movie.getTitle() + " " + lr_movie.getReleaseDate();
+        String lv_fullNameYear = lr_movie.getTitle();
         return lv_fullNameYear;
     }
+
+
 
 }
