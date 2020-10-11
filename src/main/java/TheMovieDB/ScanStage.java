@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ScanStage {
 
@@ -124,7 +125,6 @@ public class ScanStage {
         mr_labelArrow.setPadding(new Insets(0, 0, 0, 42));
         mr_labelSpacing = new Label(" \n ");
 
-
         //Add elements
         mr_hBoxRightMidSmall.getChildren().addAll(mr_labelFolder, mr_buttonSkip);
         mr_hBoxRightBottom.getChildren().addAll(mr_buttonManSearch);
@@ -132,6 +132,25 @@ public class ScanStage {
         mr_hBoxLeftBottom.getChildren().addAll(mr_buttonBack, mr_buttonForward, mr_buttonConfirm);
         mr_vBoxLeftMid.getChildren().addAll(mr_labelMovieTitle, mr_labelMoviePoster);
         mr_hBoxLeftTop.getChildren().addAll(mr_labelSuggestion);
+
+        //Add ActionHandlers
+        mr_buttonForward.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                mr_movieHandler.nextMovie();
+                mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+                mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
+            }
+        });
+
+        mr_buttonBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                mr_movieHandler.previousMovie();
+                mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+                mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
+            }
+        });
 
         mr_stageScan.setWidth(420);
         mr_stageScan.setHeight(430);
@@ -167,28 +186,40 @@ public class ScanStage {
                 ma_directoryList.add(lr_file);
             }
         }
-        mv_currentFolderCount = -1; //because nextFolder is called imidiately, so we need -1 for first call
+        mv_currentFolderCount = -1; //because nextFolder is called immediately, so we need -1 for first call
         nextFolder();
 
     }
 
     //does set label for folder and file name and image
     public void nextFolder() throws FileNotFoundException {
-        //TODO Check FolderCount
         if (mv_currentFolderCount+1 < ma_directoryList.size()) {
             mv_currentFolderCount++;
         } else {
             //TODO send message - Every folder was scanned!
         }
+        //Set name of folder and content (label)
+        mr_labelFolderName.setText(ma_directoryList.get(mv_currentFolderCount).getName());
+        ArrayList<File> la_contentInFolder = new ArrayList<File>(Arrays.asList(ma_directoryList.get(mv_currentFolderCount).listFiles()));
+        for (File lr_file : la_contentInFolder) {
+            if (lr_file.isFile()) {
+                String lv_f = lr_file.getName();
+                if ((lv_f.endsWith(".mkv")) || (lv_f.endsWith(".avi")) || (lv_f.endsWith(".mp4")) || (lv_f.endsWith(".flv")) || (lv_f.endsWith(".vob")) || (lv_f.endsWith(".ogv")) || (lv_f.endsWith(".ogg")) || (lv_f.endsWith(".mov")) || (lv_f.endsWith(".wmv")) || (lv_f.endsWith(".m4p")) || (lv_f.endsWith(".m4v")) || (lv_f.endsWith(".mpg")) || (lv_f.endsWith(".mpeg")) || (lv_f.endsWith("."))) {
+                    mr_labelContentName.setText(lr_file.getName());
+                    break;
+                }
+            }
+        }
 
         String lv_movieName = ma_directoryList.get(mv_currentFolderCount).getName();
         //Initialize MovieHandler with ALL movies for every new folder
         mr_movieHandler = new MovieHandler(lv_movieName);
+        //TODO is MovieList empty? -> Open Window
         mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+        mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
+    }
 
-
-
-
+    public void setDirectoryName () {
 
     }
 }
