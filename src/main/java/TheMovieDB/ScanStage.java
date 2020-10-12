@@ -152,6 +152,18 @@ public class ScanStage {
             }
         });
 
+        mr_buttonConfirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                setDirectoryName();
+                try {
+                    nextFolder();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mr_stageScan.setWidth(420);
         mr_stageScan.setHeight(430);
         mr_stageScan.setTitle("Scanner");
@@ -215,11 +227,26 @@ public class ScanStage {
         //Initialize MovieHandler with ALL movies for every new folder
         mr_movieHandler = new MovieHandler(lv_movieName);
         //TODO is MovieList empty? -> Open Window
+
+
         mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
         mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
     }
 
     public void setDirectoryName () {
+        String lv_nameOfNewPath = ma_directoryList.get(mv_currentFolderCount).getAbsolutePath();
+        String lv_movieName = mr_movieHandler.getMovieName();
+        //Replace chars that are not allowed
+        String[] la_chars = {"<",">",":","\"","/","\\","|","?","*"};
+        for (String lv_char : la_chars) {
+            lv_movieName = lv_movieName.replace(lv_char," ");
+        }
+        lv_nameOfNewPath = lv_nameOfNewPath.replace(ma_directoryList.get(mv_currentFolderCount).getName(),lv_movieName);
+        File lr_fileRename = new File (lv_nameOfNewPath);
+        ma_directoryList.get(mv_currentFolderCount).renameTo(lr_fileRename);
+    }
 
+    public String setMovieListThroughWindow() {
+        
     }
 }
