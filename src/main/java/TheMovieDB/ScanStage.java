@@ -176,13 +176,13 @@ public class ScanStage {
         mr_buttonRoot.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                mr_stageScan.show();
                 try {
                     setFolderList();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 mr_stageRoot.hide();
-                mr_stageScan.show();
             }
         });
     }
@@ -227,6 +227,10 @@ public class ScanStage {
         //Initialize MovieHandler with ALL movies for every new folder
         mr_movieHandler = new MovieHandler(lv_movieName);
         //TODO is MovieList empty? -> Open Window
+        if (!mr_movieHandler.hasEntries()) {
+            setMovieListThroughWindow(false);
+            return;
+        }
 
 
         mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
@@ -246,7 +250,16 @@ public class ScanStage {
         ma_directoryList.get(mv_currentFolderCount).renameTo(lr_fileRename);
     }
 
-    public String setMovieListThroughWindow() {
+    public void setMovieListThroughWindow(boolean iv_manualSearch) {
+        Stage lr_stageInput = new Stage();
+        BorderPane lr_borderPaneInput = new BorderPane();
+        Scene lr_sceneInput = new Scene(lr_borderPaneInput,300,50);
+
+        lr_stageInput.setScene(lr_sceneInput);
+        lr_stageInput.setResizable(false);
+        lr_stageInput.show();
+        mr_stageScan.hide();
         
+
     }
 }

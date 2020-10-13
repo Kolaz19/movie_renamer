@@ -38,7 +38,7 @@ public class MovieHandler {
         mv_currentMovieCounter = 0;
     }
 
-    private boolean hasEntries() {
+    public boolean hasEntries() {
         boolean lv_hasEntries;
         return !ma_movieList.isEmpty();
     }
