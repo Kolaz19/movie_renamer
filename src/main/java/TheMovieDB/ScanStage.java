@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -209,7 +210,10 @@ public class ScanStage {
             mv_currentFolderCount++;
         } else {
             //TODO send message - Every folder was scanned!
+            //because NullPointerException because folder is renamed
         }
+
+        //TODO See if folder is already correctly named -> skip folder
         //Set name of folder and content (label)
         mr_labelFolderName.setText(ma_directoryList.get(mv_currentFolderCount).getName());
         ArrayList<File> la_contentInFolder = new ArrayList<File>(Arrays.asList(ma_directoryList.get(mv_currentFolderCount).listFiles()));
@@ -253,13 +257,21 @@ public class ScanStage {
     public void setMovieListThroughWindow(boolean iv_manualSearch) {
         Stage lr_stageInput = new Stage();
         BorderPane lr_borderPaneInput = new BorderPane();
-        Scene lr_sceneInput = new Scene(lr_borderPaneInput,300,50);
+        Scene lr_sceneInput = new Scene(lr_borderPaneInput,300,100);
+
+        //Elements of window
+        String lv_noData = "There were no movies found to folder named \"" + ma_directoryList.get(mv_currentFolderCount).getName() + "\"" + "\n Enter a correct movie name:";
+        Label lr_labelNoDataFound = new Label (lv_noData);
+        TextArea lr_inputField = new TextArea();
+        Image lr_imageCheckmarkIcon = new Image("file:CheckMark.png", 20, 20, false, true);
+        Button lr_buttonConfirm = new Button("",new ImageView(lr_imageCheckmarkIcon));
 
         lr_stageInput.setScene(lr_sceneInput);
         lr_stageInput.setResizable(false);
         lr_stageInput.show();
         mr_stageScan.hide();
-        
 
+
+        //TODO ALSO set movie list and labels (poster and movie title)
     }
 }

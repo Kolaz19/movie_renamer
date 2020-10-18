@@ -4,7 +4,6 @@ import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import javafx.scene.image.Image;
-
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.List;
