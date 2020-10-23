@@ -4,9 +4,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -119,8 +117,7 @@ public class ScanStage {
         Image lr_imageFileIcon = new Image("file:FileIcon.png", 20, 20, false, true);
         mr_labelFile = new Label("File in Folder ", new ImageView(lr_imageFileIcon));
         mr_labelFile.setStyle("-fx-font-weight: bold;-fx-background-color: abc;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
-        mr_imageMovie = new Image("file:te.jpg", 210, 280, false, true);
-        mr_labelMoviePoster = new Label("", new ImageView(mr_imageMovie));
+        mr_labelMoviePoster = new Label("");
         Image lr_imageArrow = new Image("file:BlackArrowDownward.png", 25, 125, false, true);
         mr_labelArrow = new Label("", new ImageView(lr_imageArrow));
         mr_labelArrow.setPadding(new Insets(0, 0, 0, 42));
@@ -230,7 +227,6 @@ public class ScanStage {
         String lv_movieName = ma_directoryList.get(mv_currentFolderCount).getName();
         //Initialize MovieHandler with ALL movies for every new folder
         mr_movieHandler = new MovieHandler(lv_movieName);
-        //TODO is MovieList empty? -> Open Window
         if (!mr_movieHandler.hasEntries()) {
             setMovieListThroughWindow(false);
             return;
@@ -256,20 +252,81 @@ public class ScanStage {
 
     public void setMovieListThroughWindow(boolean iv_manualSearch) {
         Stage lr_stageInput = new Stage();
+        lr_stageInput.setHeight(300);
+        lr_stageInput.setHeight(140);
+        lr_stageInput.setTitle("Enter movie name");
         BorderPane lr_borderPaneInput = new BorderPane();
         Scene lr_sceneInput = new Scene(lr_borderPaneInput,300,100);
 
         //Elements of window
-        String lv_noData = "There were no movies found to folder named \"" + ma_directoryList.get(mv_currentFolderCount).getName() + "\"" + "\n Enter a correct movie name:";
-        Label lr_labelNoDataFound = new Label (lv_noData);
-        TextArea lr_inputField = new TextArea();
+        String lv_noData;
+        Label lr_labelNoDataFound = new Label ();
+        if (!iv_manualSearch) {
+            lv_noData = "No movies found to \"" + ma_directoryList.get(mv_currentFolderCount).getName() + "\"" + "\nEnter a better movie name:";
+            lr_labelNoDataFound.setStyle("-fx-background-color: lightcoral;");
+        } else {
+            lv_noData = "Search for a movie";
+            lr_labelNoDataFound.setStyle("-fx-background-color: khaki;");
+        }
+        lr_labelNoDataFound.setText(lv_noData);
+        lr_labelNoDataFound.setPadding(new Insets(4,4,4,10));
+        TextField lr_inputField = new TextField();
+        lr_inputField.setPromptText("Enter better movie name");
+        lr_inputField.setMaxSize(150,5);
         Image lr_imageCheckmarkIcon = new Image("file:CheckMark.png", 20, 20, false, true);
         Button lr_buttonConfirm = new Button("",new ImageView(lr_imageCheckmarkIcon));
+        Button lr_buttonSkip = new Button("Skip folder");
+
+        lr_borderPaneInput.setPadding(new Insets(5,10,5,10));
+        lr_borderPaneInput.setLeft(lr_buttonSkip);
+        lr_borderPaneInput.setTop(lr_labelNoDataFound);
+        lr_borderPaneInput.setRight(lr_buttonConfirm);
+        lr_borderPaneInput.setCenter(lr_inputField);
+        BorderPane.setAlignment(lr_labelNoDataFound,Pos.BOTTOM_CENTER);
+        BorderPane.setAlignment(lr_inputField,Pos.CENTER);
+        BorderPane.setAlignment(lr_buttonSkip,Pos.CENTER_LEFT);
+        BorderPane.setAlignment(lr_buttonConfirm,Pos.CENTER_RIGHT);
+
+        if (iv_manualSearch) {
+            BorderPane.setMargin(lr_labelNoDataFound, new Insets(20, 0, 0, 0));
+        }
 
         lr_stageInput.setScene(lr_sceneInput);
         lr_stageInput.setResizable(false);
         lr_stageInput.show();
         mr_stageScan.hide();
+        //Event Handler
+        lr_buttonSkip.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                lr_stageInput.hide();
+                mr_stageScan.show();
+                try {
+                    nextFolder();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        lr_buttonConfirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                try {
+                    mr_movieHandler = new MovieHandler(lr_inputField.getText());
+                    if (mr_movieHandler.hasEntries()) {
+
+                    } else {
+                        lr_labelNoDataFound.setText("No movie found for " + lr_inputField.getText());
+                        lr_inputField.clear();
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
         //TODO ALSO set movie list and labels (poster and movie title)
