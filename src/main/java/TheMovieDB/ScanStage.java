@@ -94,12 +94,12 @@ public class ScanStage {
         mr_buttonSkip.setPadding(new Insets(3, 5, 3, 5));
 
         //Configuration Labels
-        mr_labelFolderName = new Label("Space");
+        mr_labelFolderName = new Label("");
         mr_labelFolderName.setAlignment(Pos.TOP_LEFT);
         mr_labelFolderName.setWrapText(true);
         mr_labelFolderName.setMaxWidth(170);
         mr_labelFolderName.setMinHeight(34);
-        mr_labelContentName = new Label("Space");
+        mr_labelContentName = new Label("");
         mr_labelContentName.setAlignment(Pos.TOP_LEFT);
         mr_labelContentName.setWrapText(true);
         mr_labelContentName.setMaxWidth(170);
@@ -162,6 +162,24 @@ public class ScanStage {
             }
         });
 
+        mr_buttonSkip.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    nextFolder();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mr_buttonManSearch.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                setMovieListThroughWindow(true);
+            }
+        });
+
         mr_stageScan.setWidth(420);
         mr_stageScan.setHeight(430);
         mr_stageScan.setTitle("Scanner");
@@ -210,6 +228,11 @@ public class ScanStage {
             //because NullPointerException because folder is renamed
         }
 
+        String lv_movieName = ma_directoryList.get(mv_currentFolderCount).getName();
+        //Initialize MovieHandler with ALL movies for every new folder
+        mr_movieHandler = new MovieHandler(lv_movieName);
+        mr_movieHandler.isCorrectlyNamed();
+
         //TODO See if folder is already correctly named -> skip folder
         //Set name of folder and content (label)
         mr_labelFolderName.setText(ma_directoryList.get(mv_currentFolderCount).getName());
@@ -224,14 +247,10 @@ public class ScanStage {
             }
         }
 
-        String lv_movieName = ma_directoryList.get(mv_currentFolderCount).getName();
-        //Initialize MovieHandler with ALL movies for every new folder
-        mr_movieHandler = new MovieHandler(lv_movieName);
         if (!mr_movieHandler.hasEntries()) {
             setMovieListThroughWindow(false);
             return;
         }
-
 
         mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
         mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
@@ -265,7 +284,7 @@ public class ScanStage {
             lv_noData = "No movies found to \"" + ma_directoryList.get(mv_currentFolderCount).getName() + "\"" + "\nEnter a better movie name:";
             lr_labelNoDataFound.setStyle("-fx-background-color: lightcoral;");
         } else {
-            lv_noData = "Search for a movie";
+            lv_noData = "Search for a better movie name for\n folder \"" + mr_labelFolderName.getText() + "\"";
             lr_labelNoDataFound.setStyle("-fx-background-color: khaki;");
         }
         lr_labelNoDataFound.setText(lv_noData);
@@ -317,7 +336,10 @@ public class ScanStage {
                 try {
                     mr_movieHandler = new MovieHandler(lr_inputField.getText());
                     if (mr_movieHandler.hasEntries()) {
-
+                        mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
+                        mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+                        lr_stageInput.hide();
+                        mr_stageScan.show();
                     } else {
                         lr_labelNoDataFound.setText("No movie found for " + lr_inputField.getText());
                         lr_inputField.clear();
@@ -327,8 +349,5 @@ public class ScanStage {
                 }
             }
         });
-
-
-        //TODO ALSO set movie list and labels (poster and movie title)
     }
 }
