@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MovieHandler {
 
@@ -25,6 +26,13 @@ public class MovieHandler {
 
     public MovieHandler(String iv_folderName) throws FileNotFoundException {
         mv_correspondingFolder = iv_folderName;
+        int lv_nameLength = iv_folderName.length();
+
+        if ((lv_nameLength > 7) && mv_correspondingFolder.substring(lv_nameLength-6,lv_nameLength).matches("\\(\\d{4}\\)") )  {
+            iv_folderName = iv_folderName.substring(0,lv_nameLength-7);
+        }
+
+
         MovieResultsPage ma_movieResults = gr_searchEntity.searchMovie(iv_folderName,null,"de",true,1);
         ma_movieList = ma_movieResults.getResults();
         Iterator<MovieDb> la_movieIterator = ma_movieList.iterator();
@@ -63,7 +71,7 @@ public class MovieHandler {
     public String getMovieName() {
         MovieDb lr_movie =  ma_movieList.get(mv_currentMovieCounter);
         String lv_fullNameYear = lr_movie.getTitle();
-        if (lr_movie.getReleaseDate().length() == 4) {
+        if (lr_movie.getReleaseDate().length() >= 4) {
             lv_fullNameYear+= " (" + lr_movie.getReleaseDate().substring(0,4) + ")";
         }
         return lv_fullNameYear;
@@ -75,13 +83,23 @@ public class MovieHandler {
     }
 
     public boolean isCorrectlyNamed () {
-        if (!(mv_correspondingFolder.length() > 6) || (!mv_correspondingFolder.contains("(")) || !(mv_correspondingFolder.contains(")")))  {
-            String lv_potentialYear = "he";
-        } else {
+        int lv_nameLength = mv_correspondingFolder.length();
+        String lv_potMovieName;
+        String originalName;
+        //Check if year is given
+        if (!(lv_nameLength > 7) || !mv_correspondingFolder.substring(lv_nameLength-6,lv_nameLength).matches("\\(\\d{4}\\)") )  {
             return false;
         }
-
-
+        //Check if movies exist with this name
+        if (!this.hasEntries()) {
+            return false;
+        }
+        originalName = ma_movieList.get(mv_currentMovieCounter).getTitle();
+        lv_potMovieName = mv_correspondingFolder.substring(0,lv_nameLength-7);
+        //Check if movie name is given
+        if (!lv_potMovieName.equals(originalName)) {
+            return false;
+        }
         return true;
     }
 

@@ -205,7 +205,7 @@ public class ScanStage {
 
     public void setFolderList() throws FileNotFoundException {
         File lr_directoryPath = new File(mr_labelPathRoot.getText());
-        File lr_filesList[] = lr_directoryPath.listFiles();
+        File[] lr_filesList = lr_directoryPath.listFiles();
         ma_directoryList.clear();
 
         //TODO directory empty or non existent
@@ -231,9 +231,11 @@ public class ScanStage {
         String lv_movieName = ma_directoryList.get(mv_currentFolderCount).getName();
         //Initialize MovieHandler with ALL movies for every new folder
         mr_movieHandler = new MovieHandler(lv_movieName);
-        mr_movieHandler.isCorrectlyNamed();
+        if (mr_movieHandler.isCorrectlyNamed()) {
+            this.nextFolder();
+            return;
+        }
 
-        //TODO See if folder is already correctly named -> skip folder
         //Set name of folder and content (label)
         mr_labelFolderName.setText(ma_directoryList.get(mv_currentFolderCount).getName());
         ArrayList<File> la_contentInFolder = new ArrayList<File>(Arrays.asList(ma_directoryList.get(mv_currentFolderCount).listFiles()));
