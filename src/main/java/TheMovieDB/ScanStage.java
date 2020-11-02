@@ -31,10 +31,13 @@ public class ScanStage {
     VBox mr_vBoxRightMid, mr_vBoxLeftMid;
     HBox mr_hBoxRightBottom, mr_hBoxLeftBottom, mr_hBoxLeftTop, mr_hBoxRightMidSmall;
     Button mr_buttonManSearch, mr_buttonBack, mr_buttonForward, mr_buttonConfirm, mr_buttonSkip;
-    Image mr_imageMovie;
+    Image mr_imageMovie, mr_bImage;
     ArrayList<File> ma_directoryList;
     MovieHandler mr_movieHandler;
+    BackgroundImage mr_backgroundImage;
+    Background mr_background;
     int mv_currentFolderCount;
+
 
 
     ScanStage(Stage ir_stageRoot, Button ir_buttonScan, Label ir_labelPath) {
@@ -123,6 +126,12 @@ public class ScanStage {
         mr_labelArrow.setPadding(new Insets(0, 0, 0, 42));
         mr_labelSpacing = new Label(" \n ");
 
+        //Background
+        mr_bImage = new Image("file:BackgroundScan.jpg",430,430,false,true);
+        mr_backgroundImage = new BackgroundImage(mr_bImage,BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.DEFAULT,BackgroundSize.DEFAULT);
+        mr_background = new Background(mr_backgroundImage);
+        mr_borderPaneMain.setBackground(mr_background);
+
         //Add elements
         mr_hBoxRightMidSmall.getChildren().addAll(mr_labelFolder, mr_buttonSkip);
         mr_hBoxRightBottom.getChildren().addAll(mr_buttonManSearch);
@@ -188,20 +197,6 @@ public class ScanStage {
         //TODO closing window should open the Main
     }
 
-    public void setRootHandler() {
-        mr_buttonRoot.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                mr_stageScan.show();
-                try {
-                    setFolderList();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                mr_stageRoot.hide();
-            }
-        });
-    }
 
     public void setFolderList() throws FileNotFoundException {
         File lr_directoryPath = new File(mr_labelPathRoot.getText());
@@ -224,8 +219,9 @@ public class ScanStage {
         if (mv_currentFolderCount+1 < ma_directoryList.size()) {
             mv_currentFolderCount++;
         } else {
-            //TODO send message - Every folder was scanned!
-            //because NullPointerException because folder is renamed
+            mr_stageScan.hide();
+            this.allScanned();
+            return;
         }
 
         String lv_movieName = ma_directoryList.get(mv_currentFolderCount).getName();
@@ -273,20 +269,23 @@ public class ScanStage {
 
     public void setMovieListThroughWindow(boolean iv_manualSearch) {
         Stage lr_stageInput = new Stage();
-        lr_stageInput.setHeight(300);
-        lr_stageInput.setHeight(140);
+        lr_stageInput.setHeight(70);
+        lr_stageInput.setWidth(300);
+        lr_stageInput.setHeight(120);
         lr_stageInput.setTitle("Enter movie name");
         BorderPane lr_borderPaneInput = new BorderPane();
-        Scene lr_sceneInput = new Scene(lr_borderPaneInput,300,100);
+        Scene lr_sceneInput = new Scene(lr_borderPaneInput,300,70);
 
         //Elements of window
         String lv_noData;
         Label lr_labelNoDataFound = new Label ();
         if (!iv_manualSearch) {
             lv_noData = "No movies found to \"" + ma_directoryList.get(mv_currentFolderCount).getName() + "\"" + "\nEnter a better movie name:";
+            lr_borderPaneInput.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #FFB6C1, #DCDCDC);");
             lr_labelNoDataFound.setStyle("-fx-background-color: lightcoral;");
         } else {
             lv_noData = "Search for a better movie name for\n folder \"" + mr_labelFolderName.getText() + "\"";
+            lr_borderPaneInput.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #B0E0E6, #F5DEB3);");
             lr_labelNoDataFound.setStyle("-fx-background-color: khaki;");
         }
         lr_labelNoDataFound.setText(lv_noData);
@@ -307,10 +306,6 @@ public class ScanStage {
         BorderPane.setAlignment(lr_inputField,Pos.CENTER);
         BorderPane.setAlignment(lr_buttonSkip,Pos.CENTER_LEFT);
         BorderPane.setAlignment(lr_buttonConfirm,Pos.CENTER_RIGHT);
-
-        if (iv_manualSearch) {
-            BorderPane.setMargin(lr_labelNoDataFound, new Insets(20, 0, 0, 0));
-        }
 
         lr_stageInput.setScene(lr_sceneInput);
         lr_stageInput.setResizable(false);
@@ -352,4 +347,38 @@ public class ScanStage {
             }
         });
     }
+
+    private void allScanned() {
+        Stage lr_stageSuccess = new Stage();
+        lr_stageSuccess.setHeight(80);
+        lr_stageSuccess.setWidth(250);
+        lr_stageSuccess.setTitle("Successful");
+        BorderPane lr_borderPaneSuccess = new BorderPane();
+        Scene lr_sceneSuccess = new Scene(lr_borderPaneSuccess,300,140);
+        Label lr_labelAllScanned = new Label ("Every folder was scanned!");
+        Image lr_imageCheckmarkIcon = new Image("file:CheckMark.png", 20, 20, false, true);
+        Button lr_buttonConfirm = new Button("",new ImageView(lr_imageCheckmarkIcon));
+
+        lr_borderPaneSuccess.setCenter(lr_labelAllScanned);
+        lr_borderPaneSuccess.setRight(lr_buttonConfirm);
+        lr_stageSuccess.setScene(lr_sceneSuccess);
+        BorderPane.setAlignment(lr_buttonConfirm,Pos.CENTER);
+        lr_stageSuccess.setResizable(false);
+        lr_borderPaneSuccess.setPadding(new Insets(0,5,0,0));
+        lr_labelAllScanned.setFont(new Font("Serif", 15));
+        lr_labelAllScanned.setStyle("-fx-font-weight: bold;");
+
+        lr_borderPaneSuccess.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #FFFAE6, #8FBC8F);");
+        lr_stageSuccess.show();
+
+        lr_buttonConfirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                lr_stageSuccess.close();
+                mr_stageRoot.show();
+            }
+        });
+
+    }
+
 }

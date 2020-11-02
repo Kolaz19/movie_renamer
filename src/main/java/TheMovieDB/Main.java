@@ -116,16 +116,26 @@ public class Main extends Application {
         mr_insetButton = new Insets(20);
         BorderPane.setMargin(mr_buttonPath, mr_insetButton);
 
-        //Set up and start
-        mr_scanStage = new ScanStage(ir_primaryStage, mr_buttonScan, mr_labelPath);
-        mr_scanStage.setRootHandler();
+        mr_buttonScan.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                ir_primaryStage.hide();
+                mr_scanStage = new ScanStage(ir_primaryStage, mr_buttonScan, mr_labelPath);
+                mr_scanStage.mr_stageScan.show();
+                try {
+                    mr_scanStage.setFolderList();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         ir_primaryStage.setWidth(300);
         ir_primaryStage.setHeight(245);
         ir_primaryStage.setTitle("Main Menu");
         ir_primaryStage.setScene(mr_scene);
         ir_primaryStage.setResizable(false);
         ir_primaryStage.show();
-
     }
 
     public static String readFromConfig(String iv_keyWord) throws FileNotFoundException {
@@ -184,9 +194,6 @@ public class Main extends Application {
         File lr_choosenDirectory = lr_directoryChooser.showDialog(lr_temporaryStage);
         return lr_choosenDirectory.getAbsolutePath();
     }
-
-
-
 
     }
 
