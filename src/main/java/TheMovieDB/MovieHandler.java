@@ -94,6 +94,7 @@ public class MovieHandler {
         if (!this.hasEntries()) {
             return false;
         }
+        //TODO check all movies in list
         originalName = ma_movieList.get(mv_currentMovieCounter).getTitle();
         lv_potMovieName = mv_correspondingFolder.substring(0,lv_nameLength-7);
         //Check if movie name is given

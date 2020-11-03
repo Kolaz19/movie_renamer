@@ -102,11 +102,13 @@ public class ScanStage {
         mr_labelFolderName.setWrapText(true);
         mr_labelFolderName.setMaxWidth(170);
         mr_labelFolderName.setMinHeight(34);
+        mr_labelFolderName.setFont(new Font("Arial",15));
         mr_labelContentName = new Label("");
         mr_labelContentName.setAlignment(Pos.TOP_LEFT);
         mr_labelContentName.setWrapText(true);
         mr_labelContentName.setMaxWidth(170);
         mr_labelContentName.setMinHeight(34);
+        mr_labelContentName.setFont(new Font("Arial",15));
         mr_labelSuggestion = new Label("Suggestion:");
         mr_labelSuggestion.setFont(new Font("Arial", 15));
         mr_labelSuggestion.setStyle("-fx-font-weight: bold;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
@@ -114,6 +116,9 @@ public class ScanStage {
         mr_labelMovieTitle.setStyle("-fx-font-weight: bold;-fx-background-color: #cd5c5c");
         mr_labelMovieTitle.setFont(new Font("Arial", 15));
         mr_labelMovieTitle.setMaxWidth(200);
+        mr_labelMovieTitle.setMinHeight(40);
+        mr_labelMovieTitle.setMaxHeight(40);
+        mr_labelMovieTitle.setWrapText(true);
         Image lr_imageFolderIcon = new Image("file:FolderIcon.png", 20, 20, false, true);
         mr_labelFolder = new Label("Current Folder ", new ImageView(lr_imageFolderIcon));
         mr_labelFolder.setStyle("-fx-font-weight: bold;-fx-background-color: abc;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
@@ -190,7 +195,7 @@ public class ScanStage {
         });
 
         mr_stageScan.setWidth(420);
-        mr_stageScan.setHeight(430);
+        mr_stageScan.setHeight(450);
         mr_stageScan.setTitle("Scanner");
         mr_stageScan.setScene(mr_sceneScan);
         mr_stageScan.setResizable(false);
