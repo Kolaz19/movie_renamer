@@ -40,7 +40,6 @@ public class Main extends Application {
     Insets mr_insetButton;
     ScanStage mr_scanStage;
 
-
     public static void main(String[] args) {
         BasicConfigurator.configure();
         launch(args);

@@ -1,11 +1,11 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 //add
-mainClassName = 'TheMovieDB.Main'
+mainClassName = 'TheMovieDB.Starter'
 
 group 'org.example'
 version '1.0-SNAPSHOT'
@@ -23,6 +23,20 @@ dependencies {
 
 //add
 javafx {
-    version = "11"
+    version = "15"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+
+
+
+
+jar {
+    manifest {
+        attributes "Main-Class": "TheMovieDB.Starter"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

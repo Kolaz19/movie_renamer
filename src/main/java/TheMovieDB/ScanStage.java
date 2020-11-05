@@ -11,11 +11,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Properties;
 
 public class ScanStage {
 
@@ -85,7 +87,7 @@ public class ScanStage {
         mr_borderPaneMain.setLeft(mr_borderPaneLeft);
         mr_borderPaneMain.setRight(mr_borderPaneRight);
         mr_stageScan = new Stage();
-        mr_sceneScan = new Scene(mr_borderPaneMain, 430, 430);
+        mr_sceneScan = new Scene(mr_borderPaneMain, 430, 435);
 
         //Configuration Buttons
         mr_buttonManSearch = new Button("Manual Search");
@@ -119,6 +121,7 @@ public class ScanStage {
         mr_labelMovieTitle.setMinHeight(40);
         mr_labelMovieTitle.setMaxHeight(40);
         mr_labelMovieTitle.setWrapText(true);
+        mr_labelMovieTitle.setPadding(new Insets(0,0,0,5));
         Image lr_imageFolderIcon = new Image("file:FolderIcon.png", 20, 20, false, true);
         mr_labelFolder = new Label("Current Folder ", new ImageView(lr_imageFolderIcon));
         mr_labelFolder.setStyle("-fx-font-weight: bold;-fx-background-color: abc;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
@@ -126,7 +129,7 @@ public class ScanStage {
         mr_labelFile = new Label("File in Folder ", new ImageView(lr_imageFileIcon));
         mr_labelFile.setStyle("-fx-font-weight: bold;-fx-background-color: abc;-fx-border-color: black, transparent, black; -fx-border-width: 0 0 1 0, 0 0 1 0, 0 0 1 0; -fx-border-insets: 0 0 1 0, 0 0 2 0, 0 0 3 0");
         mr_labelMoviePoster = new Label("");
-        Image lr_imageArrow = new Image("file:BlackArrowDownward.png", 25, 125, false, true);
+        Image lr_imageArrow = new Image("file:BlackArrowDownward.png", 25, 150, false, true);
         mr_labelArrow = new Label("", new ImageView(lr_imageArrow));
         mr_labelArrow.setPadding(new Insets(0, 0, 0, 42));
         mr_labelSpacing = new Label(" \n ");
@@ -146,6 +149,14 @@ public class ScanStage {
         mr_hBoxLeftTop.getChildren().addAll(mr_labelSuggestion);
 
         //Add ActionHandlers
+        mr_stageScan.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                mr_stageScan.close();
+                mr_stageRoot.show();
+            }
+        });
+
         mr_buttonForward.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -195,18 +206,22 @@ public class ScanStage {
         });
 
         mr_stageScan.setWidth(420);
-        mr_stageScan.setHeight(450);
+        mr_stageScan.setHeight(455);
         mr_stageScan.setTitle("Scanner");
         mr_stageScan.setScene(mr_sceneScan);
         mr_stageScan.setResizable(false);
-        //TODO closing window should open the Main
     }
 
 
     public void setFolderList() throws FileNotFoundException {
         File lr_directoryPath = new File(mr_labelPathRoot.getText());
         File[] lr_filesList = lr_directoryPath.listFiles();
-        ma_directoryList.clear();
+        if (lr_filesList == null) {
+            this.mr_stageScan.close();
+            this.mr_stageRoot.show();
+            this.allScanned(false);
+            return;
+        }
 
         //TODO directory empty or non existent
         for (File lr_file : lr_filesList) {
@@ -225,7 +240,7 @@ public class ScanStage {
             mv_currentFolderCount++;
         } else {
             mr_stageScan.hide();
-            this.allScanned();
+            this.allScanned(true);
             return;
         }
 
@@ -238,12 +253,13 @@ public class ScanStage {
         }
 
         //Set name of folder and content (label)
+        mr_labelContentName.setText("");
         mr_labelFolderName.setText(ma_directoryList.get(mv_currentFolderCount).getName());
         ArrayList<File> la_contentInFolder = new ArrayList<File>(Arrays.asList(ma_directoryList.get(mv_currentFolderCount).listFiles()));
         for (File lr_file : la_contentInFolder) {
             if (lr_file.isFile()) {
-                String lv_f = lr_file.getName();
-                if ((lv_f.endsWith(".mkv")) || (lv_f.endsWith(".avi")) || (lv_f.endsWith(".mp4")) || (lv_f.endsWith(".flv")) || (lv_f.endsWith(".vob")) || (lv_f.endsWith(".ogv")) || (lv_f.endsWith(".ogg")) || (lv_f.endsWith(".mov")) || (lv_f.endsWith(".wmv")) || (lv_f.endsWith(".m4p")) || (lv_f.endsWith(".m4v")) || (lv_f.endsWith(".mpg")) || (lv_f.endsWith(".mpeg")) || (lv_f.endsWith("."))) {
+                String lv_end = lr_file.getName();
+                if ((lv_end.endsWith(".mkv")) || (lv_end.endsWith(".avi")) || (lv_end.endsWith(".mp4")) || (lv_end.endsWith(".flv")) || (lv_end.endsWith(".vob")) || (lv_end.endsWith(".ogv")) || (lv_end.endsWith(".ogg")) || (lv_end.endsWith(".mov")) || (lv_end.endsWith(".wmv")) || (lv_end.endsWith(".m4p")) || (lv_end.endsWith(".m4v")) || (lv_end.endsWith(".mpg")) || (lv_end.endsWith(".mpeg")) || (lv_end.endsWith("."))) {
                     mr_labelContentName.setText(lr_file.getName());
                     break;
                 }
@@ -289,7 +305,7 @@ public class ScanStage {
             lr_borderPaneInput.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #FFB6C1, #DCDCDC);");
             lr_labelNoDataFound.setStyle("-fx-background-color: lightcoral;");
         } else {
-            lv_noData = "Search for a better movie name for\n folder \"" + mr_labelFolderName.getText() + "\"";
+            lv_noData = "Search for a better movie name for \nfolder \"" + mr_labelFolderName.getText() + "\"";
             lr_borderPaneInput.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #B0E0E6, #F5DEB3);");
             lr_labelNoDataFound.setStyle("-fx-background-color: khaki;");
         }
@@ -353,14 +369,23 @@ public class ScanStage {
         });
     }
 
-    private void allScanned() {
+    private void allScanned(boolean iv_foldersExist) {
         Stage lr_stageSuccess = new Stage();
         lr_stageSuccess.setHeight(80);
         lr_stageSuccess.setWidth(250);
-        lr_stageSuccess.setTitle("Successful");
+        if (iv_foldersExist) {
+            lr_stageSuccess.setTitle("Successful");
+        } else {
+            lr_stageSuccess.setTitle("Try again");
+        }
         BorderPane lr_borderPaneSuccess = new BorderPane();
         Scene lr_sceneSuccess = new Scene(lr_borderPaneSuccess,300,140);
-        Label lr_labelAllScanned = new Label ("Every folder was scanned!");
+        Label lr_labelAllScanned = new Label ();
+        if (iv_foldersExist) {
+            lr_labelAllScanned.setText("Every folder was scanned!");
+        } else {
+            lr_labelAllScanned.setText("Directory does not exist!");
+        }
         Image lr_imageCheckmarkIcon = new Image("file:CheckMark.png", 20, 20, false, true);
         Button lr_buttonConfirm = new Button("",new ImageView(lr_imageCheckmarkIcon));
 
@@ -383,7 +408,5 @@ public class ScanStage {
                 mr_stageRoot.show();
             }
         });
-
     }
-
 }
