@@ -14,7 +14,7 @@ public class MovieHandler {
     private static TmdbSearch gr_searchEntity;
     private final List<MovieDb> ma_movieList;
     private int mv_currentMovieCounter;
-    private String mv_correspondingFolder;
+    private final String mv_correspondingFolder;
 
     static {
         try {
@@ -85,23 +85,35 @@ public class MovieHandler {
     public boolean isCorrectlyNamed () {
         int lv_nameLength = mv_correspondingFolder.length();
         String lv_potMovieName;
-        String originalName;
+        String lv_originalName;
+        String lv_potYear;
         //Check if year is given
         if (!(lv_nameLength > 7) || !mv_correspondingFolder.substring(lv_nameLength-6,lv_nameLength).matches("\\(\\d{4}\\)") )  {
             return false;
         }
+        lv_potYear = mv_correspondingFolder.substring(lv_nameLength-5,lv_nameLength-1);
         //Check if movies exist with this name
         if (!this.hasEntries()) {
             return false;
         }
-        //TODO check all movies in list
-        originalName = ma_movieList.get(mv_currentMovieCounter).getTitle();
+        // check all movies in list if name is given AND year is correct
         lv_potMovieName = mv_correspondingFolder.substring(0,lv_nameLength-7);
-        //Check if movie name is given
-        if (!lv_potMovieName.equals(originalName)) {
-            return false;
+        String[] la_chars = {"<",">",":","\"","/","\\","|","?","*"};
+
+        for (MovieDb lr_movie: ma_movieList) {
+            lv_originalName = lr_movie.getTitle();
+            for (String lv_char : la_chars) {
+                lv_originalName = lv_originalName.replace(" " + lv_char + " "," ");
+                lv_originalName = lv_originalName.replace(lv_char+ " "," ");
+                lv_originalName = lv_originalName.replace(lv_char," ");
+            }
+            if (lv_potMovieName.equals(lv_originalName)) {
+                if (lr_movie.getReleaseDate().substring(0,4).equals(lv_potYear)) {
+                    return true;
+                }
+            }
         }
-        return true;
+        return false;
     }
 
 

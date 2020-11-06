@@ -281,6 +281,8 @@ public class ScanStage {
         //Replace chars that are not allowed
         String[] la_chars = {"<",">",":","\"","/","\\","|","?","*"};
         for (String lv_char : la_chars) {
+            lv_movieName = lv_movieName.replace(" " + lv_char + " "," ");
+            lv_movieName = lv_movieName.replace(lv_char + " "," ");
             lv_movieName = lv_movieName.replace(lv_char," ");
         }
         lv_nameOfNewPath = lv_nameOfNewPath.replace(ma_directoryList.get(mv_currentFolderCount).getName(),lv_movieName);
