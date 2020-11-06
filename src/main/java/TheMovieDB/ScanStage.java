@@ -290,6 +290,7 @@ public class ScanStage {
 
     public void setMovieListThroughWindow(boolean iv_manualSearch) {
         Stage lr_stageInput = new Stage();
+        lr_stageInput.setOnCloseRequest(e -> mr_stageRoot.show());
         lr_stageInput.setHeight(70);
         lr_stageInput.setWidth(300);
         lr_stageInput.setHeight(120);
@@ -371,6 +372,7 @@ public class ScanStage {
 
     private void allScanned(boolean iv_foldersExist) {
         Stage lr_stageSuccess = new Stage();
+        lr_stageSuccess.setOnCloseRequest(e -> mr_stageRoot.show());
         lr_stageSuccess.setHeight(80);
         lr_stageSuccess.setWidth(250);
         if (iv_foldersExist) {

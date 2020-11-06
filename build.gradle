@@ -35,7 +35,6 @@ jar {
     manifest {
         attributes "Main-Class": "TheMovieDB.Starter"
     }
-
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }

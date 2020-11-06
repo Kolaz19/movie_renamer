@@ -3,6 +3,7 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.model.MovieDb;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -134,6 +135,7 @@ public class Main extends Application {
         ir_primaryStage.setTitle("Main Menu");
         ir_primaryStage.setScene(mr_scene);
         ir_primaryStage.setResizable(false);
+        ir_primaryStage.setOnCloseRequest(e -> Platform.exit());
         ir_primaryStage.show();
     }
 
