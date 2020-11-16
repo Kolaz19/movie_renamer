@@ -33,7 +33,7 @@ public class MovieHandler {
         }
 
 
-        MovieResultsPage ma_movieResults = gr_searchEntity.searchMovie(iv_folderName,null,"de",true,1);
+        MovieResultsPage ma_movieResults = gr_searchEntity.searchMovie(iv_folderName,null,Main.readFromConfig("[Language]"),true,1);
         ma_movieList = ma_movieResults.getResults();
         Iterator<MovieDb> la_movieIterator = ma_movieList.iterator();
         //Delete movies without info / poster
@@ -68,9 +68,14 @@ public class MovieHandler {
         }
     }
 
-    public String getMovieName() {
+    public String getMovieName(boolean iv_originalName) {
         MovieDb lr_movie =  ma_movieList.get(mv_currentMovieCounter);
-        String lv_fullNameYear = lr_movie.getTitle();
+        String lv_fullNameYear;
+        if (iv_originalName) {
+            lv_fullNameYear = lr_movie.getOriginalTitle();
+        } else {
+            lv_fullNameYear = lr_movie.getTitle();
+        }
         if (lr_movie.getReleaseDate().length() >= 4) {
             lv_fullNameYear+= " (" + lr_movie.getReleaseDate().substring(0,4) + ")";
         }
@@ -101,7 +106,7 @@ public class MovieHandler {
         String[] la_chars = {"<",">",":","\"","/","\\","|","?","*"};
 
         for (MovieDb lr_movie: ma_movieList) {
-            lv_originalName = lr_movie.getTitle();
+            lv_originalName = lr_movie.getOriginalTitle();
             for (String lv_char : la_chars) {
                 lv_originalName = lv_originalName.replace(" " + lv_char + " "," ");
                 lv_originalName = lv_originalName.replace(lv_char+ " "," ");

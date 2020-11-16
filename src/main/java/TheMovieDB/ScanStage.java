@@ -161,7 +161,7 @@ public class ScanStage {
             @Override
             public void handle(MouseEvent event) {
                 mr_movieHandler.nextMovie();
-                mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+                mr_labelMovieTitle.setText(mr_movieHandler.getMovieName(false));
                 mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
             }
         });
@@ -170,7 +170,7 @@ public class ScanStage {
             @Override
             public void handle(MouseEvent event) {
                 mr_movieHandler.previousMovie();
-                mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+                mr_labelMovieTitle.setText(mr_movieHandler.getMovieName(false));
                 mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
             }
         });
@@ -271,13 +271,13 @@ public class ScanStage {
             return;
         }
 
-        mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+        mr_labelMovieTitle.setText(mr_movieHandler.getMovieName(false));
         mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
     }
 
     public void setDirectoryName () {
         String lv_nameOfNewPath = ma_directoryList.get(mv_currentFolderCount).getAbsolutePath();
-        String lv_movieName = mr_movieHandler.getMovieName();
+        String lv_movieName = mr_movieHandler.getMovieName(true);
         //Replace chars that are not allowed
         String[] la_chars = {"<",">",":","\"","/","\\","|","?","*"};
         for (String lv_char : la_chars) {
@@ -358,7 +358,7 @@ public class ScanStage {
                     mr_movieHandler = new MovieHandler(lr_inputField.getText());
                     if (mr_movieHandler.hasEntries()) {
                         mr_labelMoviePoster.setGraphic(new ImageView(mr_movieHandler.getMoviePoster()));
-                        mr_labelMovieTitle.setText(mr_movieHandler.getMovieName());
+                        mr_labelMovieTitle.setText(mr_movieHandler.getMovieName(false));
                         lr_stageInput.hide();
                         mr_stageScan.show();
                     } else {
