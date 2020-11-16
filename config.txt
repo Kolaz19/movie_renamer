@@ -1,0 +1,3 @@
+[API Key]=
+[Path]=E:\Filme
+[Language]=de
